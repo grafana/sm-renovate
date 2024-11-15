@@ -8,4 +8,4 @@ on:
 
 jobs:
   renovate:
-    uses: grafana/sm-renovate/.github/workflows/renovate.yaml
+    uses: grafana/sm-renovate/.github/workflows/renovate.yaml@main
