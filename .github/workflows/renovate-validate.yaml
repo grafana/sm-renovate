@@ -1,0 +1,15 @@
+name: Validate renovate config
+on: workflow_call
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+      - name: Renovate config validator
+        run: |
+          # Renovate updates the line below. Please keep its formatting as it is.
+          export RENOVATE_IMAGE=ghcr.io/renovatebot/renovate:39.17.0@sha256:89ad65038d8898af0f9deb09aec3377396d603e19a4573a844e70c23ddafd954
+          docker run -i --rm -v "$(realpath .):/repo" -w /repo --entrypoint renovate-config-validator "$RENOVATE_IMAGE" --strict
