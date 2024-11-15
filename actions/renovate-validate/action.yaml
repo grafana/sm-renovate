@@ -1,0 +1,32 @@
+name: Validate renovate config
+
+inputs:
+  config:
+    required: false
+    default: ""
+    description: |-
+      Space-separated list of configs to validate. If empty (recommended), renovate find the config for you.
+
+runs:
+  using: composite
+  steps:
+    - name: Renovate config validator
+      shell: bash
+      run: |
+        # Renovate updates the line below. Please keep its formatting as it is.
+        RENOVATE_IMAGE=ghcr.io/renovatebot/renovate:39.17.0@sha256:89ad65038d8898af0f9deb09aec3377396d603e19a4573a844e70c23ddafd954
+
+        if [[ -z "${{ inputs.config }}" ]]; then
+          docker run -i --rm -v "$(realpath .):/repo" -w /repo --entrypoint renovate-config-validator "$RENOVATE_IMAGE" --strict
+          exit 0
+        fi
+
+        success="true"
+        for c in "${{ inputs.config }}"; do
+          if ! docker run -i --rm -v "$(realpath .):/repo" -w /repo --entrypoint renovate-config-validator "$RENOVATE_IMAGE" --strict "$c"; then
+            echo "::error file=$c,title=Validation failed::Config file did not pass validation"
+            success="false"
+          fi
+        done
+
+        [[ "$success" = "true" ]]
