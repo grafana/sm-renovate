@@ -7,18 +7,17 @@
   ],
   "customManagers": [
     {
-      // Update renovate version in renovate workflows (renovate itself and renovate config validation).
+      // Update renovate version in GHA action YAMLs.
       "customType": "regex",
       "depNameTemplate": "ghcr.io/renovatebot/renovate",
       "datasourceTemplate": "docker",
-      "versioningTemplate": "docker",
       "fileMatch": [
-        "^\\.github/workflows/.*\\.ya?ml$",
+        "^actions/.*\\.ya?ml$", // Any yaml file inside /actions, including subfolders.
       ],
       "matchStrings": [
-        "renovate-version: (?<currentValue>\\S+)",
-        "RENOVATE_IMAGE=ghcr.io/renovatebot/renovate:(?<currentValue>\\S+)"
+        // https://regex101.com/r/CJFnB8/1
+        "(?<currentValue>[^@\\s]+)(?:@(?<currentDigest>\\S+))? # renovate-version",
       ]
-    },
+    }
   ]
 }
