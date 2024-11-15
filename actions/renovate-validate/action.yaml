@@ -1,4 +1,5 @@
 name: Validate renovate config
+description: Run renovate-config-validator against a config file, or the default.
 
 inputs:
   config:
@@ -22,7 +23,7 @@ runs:
         fi
 
         success="true"
-        for c in "${{ inputs.config }}"; do
+        for c in ${{ inputs.config }}; do
           if ! docker run -i --rm -v "$(realpath .):/repo" -w /repo --entrypoint renovate-config-validator "$RENOVATE_IMAGE" --strict "$c"; then
             echo "::error file=$c,title=Validation failed::Config file did not pass validation"
             success="false"
