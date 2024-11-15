@@ -1,0 +1,24 @@
+# This is _NOT_ a reusable workflow, but rather the renovate run for this repo itself.
+name: Self-hosted Renovate
+
+on:
+  schedule:
+    - cron: "22 */4 * * *"
+  # Run this job on PRs to, in dry run mode, as a sort of self-check.
+  pull_request:
+
+jobs:
+  renovate:
+    permissions:
+      # Needed for logging into vault.
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Self-hosted renovate
+        uses: ./actions/renovate
+        with:
+          dry-run: "${{ github.event_name == 'pull_request' }}"
