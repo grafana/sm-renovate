@@ -1,0 +1,44 @@
+{
+  // This file contains common settings for SM repositories.
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":semanticCommitsDisabled"
+  ],
+  "commitMessagePrefix": "chore: ",
+  "labels": [
+    "dependencies"
+  ],
+  "dependencyDashboard": false,
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 10,
+  "branchConcurrentLimit": 10,
+  "packageRules": [
+    {
+      // go.mod digest updates are very frequent, so we allow them only on monday mornings.
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "schedule": "* 0-8 * * 1"
+    },
+    {
+      // We typically want to upgrade all prometheus-go packages at once.
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchPackageNames": "github.com/prometheus/**",
+      "groupName": "prometheus-go"
+    },
+    {
+      // We typically want to upgrade all otel-go packages at once.
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchPackageNames": "go.opentelemetry.io/**",
+      "groupName": "otel-go"
+    }
+  ]
+}

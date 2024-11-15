@@ -1,0 +1,7 @@
+{
+  // This config includes minimal config settings to make renovate play well with the way we use it in Grafana Labs.
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "branchPrefix": "grafanarenovatebot/",
+  "platformCommit": "enabled", // Required for commits to be signed.
+  "rebaseWhen": "behind-base-branch",
+}
