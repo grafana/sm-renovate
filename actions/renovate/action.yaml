@@ -18,7 +18,7 @@ runs:
   steps:
     - name: retrieve secrets
       id: get-secrets
-      uses: grafana/shared-workflows/actions/get-vault-secrets@1a854a06dcab7421c2436ae585cf18af09112803
+      uses: grafana/shared-workflows/actions/get-vault-secrets@1bdb3a48906e610f13acdf4a1990dca485c85497
       with:
         common_secrets: |
           GRAFANA_RENOVATE_APP_ID=grafana-renovate-app:app-id
