@@ -12,7 +12,7 @@ inputs:
       Leave empty to use the latest version, updated in sync with renovate-validate.
     required: false
     # Renovate updates the line below. Please keep its formatting as it is.
-    default: 39.17.0@sha256:89ad65038d8898af0f9deb09aec3377396d603e19a4573a844e70c23ddafd954 # renovate-version
+    default: 39.21.1@sha256:74552474bf5045650d162cfc64a8e270112c2ab21245a5ae5c2624a80c6200cf # renovate-version
 runs:
   using: composite
   steps:
