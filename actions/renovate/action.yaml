@@ -9,7 +9,8 @@ inputs:
   renovate-version:
     description: >-
       Renovate version to use (image tag).
-      Leave empty to use the latest version, updated in sync with renovate-validate.
+      Leave empty to use the version specified in this repo, which is updated in sync with that of the renovate action.
+      Alternatively, specify it and include the `renovate-version.json5` preset to have it updated.
     required: false
     # Renovate updates the line below. Please keep its formatting as it is.
     default: 39.21.1@sha256:74552474bf5045650d162cfc64a8e270112c2ab21245a5ae5c2624a80c6200cf # renovate-version
