@@ -1,9 +1,6 @@
 {
   // This file allows to update alpine packages in Dockerfiles.
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "enabledManagers": [
-    "custom.regex"
-  ],
   "customManagers": [
     {
       // Update pinned alpine packages in Dockerfile.

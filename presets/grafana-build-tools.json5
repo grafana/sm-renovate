@@ -1,9 +1,6 @@
 {
   // This file enables updating references to the grafana-build-tools image.
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "enabledManagers": [
-    "custom.regex"
-  ],
   "customManagers": [
     {
       // Update grafana-build-tools tags across the repository.
