@@ -1,0 +1,23 @@
+{
+  // This config allows renovate to update itself in YAML files which use the format:
+  // renovate-version: 0.0.0@sha256:0000
+  // The @sha256 part is optional.
+  // This preset can be used on repositories that use the `actions/renovate*` actions preset on this repo, which
+  // accept a `renovate-version` input. By doing this, users can keep a deterministic renovate version, which also
+  // self-updates.
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    {
+      // Update renovate version in GHA action YAMLs.
+      "customType": "regex",
+      "depNameTemplate": "ghcr.io/renovatebot/renovate",
+      "datasourceTemplate": "docker",
+      "fileMatch": [
+        "\\.ya?ml$",
+      ],
+      "matchStrings": [
+        "renovate-version: (?<currentValue>[0-9\\w.-]+)(?:@(?<currentDigest>\\S+))?"
+      ]
+    }
+  ]
+}
