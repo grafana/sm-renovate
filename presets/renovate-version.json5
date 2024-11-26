@@ -19,5 +19,15 @@
         "renovate-version: (?<currentValue>[0-9\\w.-]+)(?:@(?<currentDigest>\\S+))?"
       ]
     }
+  ],
+  "packageRules": [
+    {
+      // Renovate updates itself very frequently, sometimes even several times per day. Assume that users wanting to
+      // update renovate do not want to get that much spam, and restrict it to once per week.
+      "matchPackageNames": [
+        "ghcr.io/renovatebot/renovate"
+      ],
+      "schedule": "* 0-8 * * 1", // Early on mondays only.
+    },
   ]
 }
