@@ -16,7 +16,7 @@
         "^\\.github/workflows/.*\\.ya?ml$"
       ],
       "matchStrings": [
-        "ghcr.io/grafana/grafana-build-tools:(?<currentValue>\\S+)"
+        "ghcr.io/grafana/grafana-build-tools:(?<currentValue>[\\w.-]+)(?:@(?<currentDigest>[\\w:]+))?"
       ]
     }
   ]
