@@ -1,6 +1,18 @@
 # This is _NOT_ a reusable workflow, but rather the renovate run for this repo itself.
 name: Validate renovate config
 on:
+  push:
+    branches:
+      - main
+    paths:
+      # When renovate config changes:
+      - "renovate.*"
+      - ".renovate.*"
+      - ".github/renovate.*"
+      # Also when renovate version changes:
+      - ".github/workflows/*"
+      # For this repo specifically, also when actions themselves change.
+      - ".github/actions/*"
   pull_request:
     paths:
       # When renovate config changes:
