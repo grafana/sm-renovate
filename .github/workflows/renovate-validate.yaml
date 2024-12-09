@@ -12,7 +12,7 @@ on:
       # Also when renovate version changes:
       - ".github/workflows/*"
       # For this repo specifically, also when actions themselves change.
-      - ".github/actions/*"
+      - "actions/renovate**"
   pull_request:
     paths:
       # When renovate config changes:
@@ -22,7 +22,7 @@ on:
       # Also when renovate version changes:
       - ".github/workflows/*"
       # For this repo specifically, also when actions themselves change.
-      - ".github/actions/*"
+      - "actions/renovate**"
 
 jobs:
   validate:
