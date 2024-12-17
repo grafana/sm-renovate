@@ -39,6 +39,13 @@
       ],
       "matchPackageNames": "go.opentelemetry.io/**",
       "groupName": "otel-go"
-    }
+    },
+    {
+      // shared-workflows digests get updates really often. Throttle them a bit.
+      "matchManagers": "github-actions",
+      "matchPackageNames": "grafana/shared-workflows",
+      "matchUpdateTypes": ["digest"],
+      "schedule": "* 0-8 * * 1",
+    },
   ]
 }
