@@ -1,4 +1,4 @@
-// This config is NOT intended to be reused by other repos. It's the config this repo uses to self-uppdate.
+// This config is NOT intended to be reused by other repos. It's the config this repo uses to self-update.
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
