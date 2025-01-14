@@ -4,7 +4,15 @@
   "extends": [
     "config:best-practices",
     "github>grafana/sm-renovate//presets/grafana.json5",
+    ":disableDependencyDashboard",
   ],
+
+  // This is needed in order to prevent Renovate bot and/or MendRenovate from
+  // trying to run alongside the renovate app. The GitHub Action uses a wrapper
+  // script to pass `--enable` on the command line, which overrides this
+  // setting.
+  "enabled": false,
+
   "customManagers": [
     {
       // Update renovate version in GHA action YAMLs.
