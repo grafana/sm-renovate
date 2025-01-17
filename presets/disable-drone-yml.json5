@@ -2,10 +2,13 @@
   // This preset prevents renovate from touching .drone.yml. This is useful if the drone pipeline is signed, as in this
   // case renovate changing this file will break the signature.
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "droneci": {
+    "enabled": false,
+  },
   "packageRules": [
     {
       "matchFileNames": [
-        ".drone.y*ml",
+        ".drone.yml",
       ],
       "enabled": false,
     },
