@@ -47,5 +47,11 @@
       "matchUpdateTypes": ["digest"],
       "schedule": "* 0-8 * * 1",
     },
+    {
+      // Disable updates to indirect go dependencies.
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["indirect"],
+      "enabled": false,
+    },
   ]
 }
