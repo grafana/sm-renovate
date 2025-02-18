@@ -30,5 +30,15 @@
       ],
       "schedule": "* 0-8 * * 1", // Early on mondays only.
     },
+    {
+      // Shared workflows gets updates very often, throttle them a bit.
+      "matchPackageNames": [
+        "grafana/shared-workflows",
+      ],
+      "matchUpdateTypes": [
+        "digest",
+      ],
+      "schedule": "* 0-8 * * 1", // Early on mondays only.
+    },
   ],
 }
