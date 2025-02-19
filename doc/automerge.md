@@ -10,9 +10,11 @@ The goal of this document is to agree on the means to allow renovate to perform 
 
 Renovate already has a comprehensive system of rules that can be leveraged to specify what packages and under which circumstances should be merged automatically. However, for that to work, renovate has to be able to actually perform the merge.
 
-This is currently not possible, as all SM repositories are configured to require at last one approval from members with write access (and potentially, `CODEOWNERS`) in order for a PR to be merged into main. This means that even if Renovate is configured to try and merge a PR automatically, GitHub will prevent it from doing so.
+At the point of writing, SM repositories are configured to enforce [a series of requirements](https://github.com/grafana/deployment_tools/blob/1c48dc8e28c43e990274882c7c090ba4bd7c9950/terraform/ancillary/github/synthetic-monitoring/repos.tf#L136) for a PR to be allowed to be merged into the default branch. These requirements include things such as linear history, commit message conventions, passing CI/CD checks, etc. However, the one requirement that poses a problem to automerging PRs, is [the one requiring at least one approval](https://github.com/grafana/deployment_tools/blob/1c48dc8e28c43e990274882c7c090ba4bd7c9950/terraform/ancillary/github/synthetic-monitoring/repos.tf#L166) from members with write access. This requirement means that even if Renovate is configured to try and merge a PR automatically, GitHub will prevent it from doing so unless the PR has been approved.
 
-The goal of this document is to gather consensus on how we make this possible.
+The goal of this document is to gather consensus on how we allow renovate to merge PRs without human approval, while at the same time:
+- Keep the approval requirement for actors other than Renovate
+- Keep all the other requirements for every actor, renovate included
 
 ## Proposal 1: Extended privileges for `grafanarenovatebot`
 
