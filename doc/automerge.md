@@ -36,13 +36,15 @@ It should be noted that:
 
 Instead of granting the renovate user bypass privileges, we could have a separate bot granting approvals to renovate PRs, so Renovate can automerge them just as if a human had approved the PR.
 
-This is an approach similar to the [`dependabot-automerge` workflow](https://github.com/grafana/security-github-actions/blob/main/.github/workflows/dependabot-automerge.yaml) in `grafana/security-github-actions`, but it should be noted that we probably don't want to use this particular workflow for a number of reasons.
+This is an approach similar to the [`dependabot-automerge` workflow](https://github.com/grafana/security-github-actions/blob/main/.github/workflows/dependabot-automerge.yaml) in `grafana/security-github-actions`. It should be noted that this particular workflow file won't suit us as it is tailored to dependabot, and therefore it includes the "what should be merged" logic in the approval flow, which is something that renovate does better by means of [`packageRules`](https://docs.renovatebot.com/configuration-options/#packagerules).
+
+As for the general approach of an approver bot:
 
 ➕ Pros:
 - No need to create bypass permissions, or make them consistent across repositories.
 
 ➖ Cons:
-- We'd need another application installed company-wide.
+- We'd need a different application installed company-wide to perform the approvals, as an actor cannot approve its own PRs.
 - This application needs to be given write permissions for its approvals to be valid.
 - We'd need to write the code for the approver scheduled workflow.
 - We'd need to propagate the approver workflow to all our repositories.
