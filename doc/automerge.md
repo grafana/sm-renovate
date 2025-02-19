@@ -1,10 +1,10 @@
-# Automerge workflow for renovate PRs
+# Allowing Renovate to automerge PRs
 
 ## Introduction
 
-As a team, SM has acknowledge the needs and benefits of opt-in automerge for renovate PRs. This means that we want to define, in the renovate config, a series of rules that govern whether we certain packages, dependency types, and ecosystems are allowed to be merged without a PR, or without human approval.
+As a team, SM has acknowledge the need of automatically merging an agreed subset of renovate PRs. Renovate allows to define, in its config, a series of rules that govern whether it should attempt to merge PRs for certain packages, dependency types, and ecosystems by itself, instead of relying on a human to perform the merge. As this mechanism is built into renovate, and can be defined and reviewed as code, it seems the obvious choice for deciding _what_ will be subject to be merged automatically.
 
-Renovate already offers a mechanism for this, and deciding what will be automerged is not the scope of this document. How we make automerge happen at the repository policy level, however, is.
+The goal of this document is to agree on the means to allow renovate to perform this merge action, which as of today is not possible even if we configure it to do so. Deciding _what_ dependencies are subject to be automerged is not the scope of this document.
 
 ## Problem
 
