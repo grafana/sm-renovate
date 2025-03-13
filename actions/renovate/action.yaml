@@ -2,8 +2,14 @@ name: Self-hosted Renovate
 description: Run renovate
 
 inputs:
+  use-current-branch:
+    description: |-
+      Run renovate off the branch for which this GitHub Action was invoked, instead of the default branch.
+      Must be used with dry-run.
+    required: false
+    default: "false"
   dry-run:
-    description: "Run Renovate in dry-run mode"
+    description: "Run Renovate in dry-run mode."
     required: false
     default: "false"
   renovate-version:
@@ -17,6 +23,19 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Check options
+      shell: bash
+      run: |-
+        if [[ "${{ inputs.use-current-branch }}" = "true" ]] && [[ "${{ inputs.dry-run }}" != "true" ]]; then
+          echo "::error title=Renovate action misconfigured::Refusing to run off the current branch without dry-run"
+          exit 1
+        fi
+
+        if [[ "${{ inputs.use-current-branch }}" = "true" ]] && [[ "${{ github.event_name }}" != "pull_request" ]]; then
+          echo "::error title=Renovate action misconfigured::use-current-branch should only be used in pull_request events."
+          exit 1
+        fi
+
     - name: retrieve secrets
       id: get-secrets
       uses: grafana/shared-workflows/actions/get-vault-secrets@94c84e6a44383130eaba3ed16f1c3ae667ab6925
@@ -46,4 +65,10 @@ runs:
         RENOVATE_PLATFORM: github
         RENOVATE_REPOSITORIES: ${{ github.repository }}
         RENOVATE_USERNAME: GrafanaRenovateBot
+        # https://docs.renovatebot.com/configuration-options/#usebasebranchconfig
+        RENOVATE_USE_BASE_BRANCH_CONFIG: ${{ inputs.use-current-branch && 'merge' || 'none' }}
+        # If dry-run is set and this is a PR event, run renovate off the branch being PR'd.
+        # https://docs.renovatebot.com/configuration-options/#basebranches
+        # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/accessing-contextual-information-about-workflow-runs#github-context
+        RENOVATE_BASE_BRANCHES: ${{ inputs.use-current-branch && github.head_ref || '' }}
         GOPRIVATE: github.com/grafana # Allows fetching private dependencies.
