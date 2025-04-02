@@ -1,0 +1,22 @@
+name: Test approver
+
+on:
+  pull_request:
+
+permissions:
+  checks: read
+  contents: write
+  id-token: write
+  pull-requests: write
+  statuses: read
+
+jobs:
+  approve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Self-hosted renovate
+        run: |-
+          gh --repo "${{ github.repository}}" pr review --approve -b "Automatically approving PR" 560
+        env:
+          GH_TOKEN: ${{ github.token }}
