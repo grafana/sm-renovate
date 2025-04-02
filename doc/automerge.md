@@ -16,21 +16,20 @@ The goal of this document is to gather consensus on how we allow renovate to mer
 - Keep the approval requirement for actors other than Renovate
 - Keep all the other requirements for every actor, renovate included
 
-## Proposal 1: Extended privileges for `grafanarenovatebot`
+## Proposal 1: Migrate policies to `policy-bot`, and special-case `grafanarenovatebot`
 
 In our repositories, Renovate runs as a scheduled workflow in GHA, and acts as the [`grafanarenovatebot` app](https://github.com/apps/grafanarenovatebot). A solution to the automerge problem could be to allow this user specifically to bypass this requirement.
 
-This should be doable by adding a "Bypass" entry for this user in the ruleset that requires approvals, under Rules > Rulesets > [Add Bypasss] button.
+~This should be doable by adding a "Bypass" entry for this user in the ruleset that requires approvals, under Rules > Rulesets > [Add Bypasss] button.~
 
-It should be noted that:
-- The ruleset that requires CI/CD to pass can be a different one, without any bypass.
-- Renovate itself will not attempt to automerge a PR if CI/CD does not pass, or if there is no CI/CD (unless [`ignoreTests`](https://docs.renovatebot.com/configuration-options/#ignoretests) is set, which we shouldn't).
+Upon further investigation, we have realized that bypasses to github requirements are not automatic. Instead, they enable the actor with bypass privileges to "force" the action, e.g. through a "Bypass and merge" button in the UI. This means renovate won't be able to perform this action. The only path forward would be to delegate most checks to policy-bot, which can be configured to entirely exclude some actors from some rules.
 
 ➕ Pros:
-- Simple: Only a config change, no coding required.
+- Simple: Only a config change.
 
 ➖ Cons:
 - This change needs to be either brought into terraform, or documented somewhere as a requirement.
+- This change would tie us to policy-bot.
 
 ## Proposal 2: Approver bot
 
@@ -48,3 +47,7 @@ As for the general approach of an approver bot:
 - This application needs to be given write permissions for its approvals to be valid.
 - We'd need to write the code for the approver scheduled workflow.
 - We'd need to propagate the approver workflow to all our repositories.
+
+## Decision
+
+To avoid making us entirely dependent on third-party tools, we decided to go with Proposal 2: A second application that will approve, through a workflow, PRs from renovate matching some baseline requirements. Combined with renovate's automerge functionality, which triggers GitHub's automerge functionality, this will make GitHub automerge the designated PRs if and only if all other requirements (such as CI/CD checks) are met.
