@@ -25,13 +25,17 @@ runs:
   steps:
     - name: Check options
       shell: bash
+      env:
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        INPUTS_DRY_RUN: ${{ inputs.dry-run }}
+        INPUTS_USE_CURRENT_BRANCH: ${{ inputs.use-current-branch }}
       run: |-
-        if [[ "${{ inputs.use-current-branch }}" = "true" ]] && [[ "${{ inputs.dry-run }}" != "true" ]]; then
+        if [[ "${INPUTS_USE_CURRENT_BRANCH}" = "true" ]] && [[ "${INPUTS_DRY_RUN}" != "true" ]]; then
           echo "::error title=Renovate action misconfigured::Refusing to run off the current branch without dry-run"
           exit 1
         fi
 
-        if [[ "${{ inputs.use-current-branch }}" = "true" ]] && [[ "${{ github.event_name }}" != "pull_request" ]]; then
+        if [[ "${INPUTS_USE_CURRENT_BRANCH}" = "true" ]] && [[ "${GITHUB_EVENT_NAME}" != "pull_request" ]]; then
           echo "::error title=Renovate action misconfigured::use-current-branch should only be used in pull_request events."
           exit 1
         fi
