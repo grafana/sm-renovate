@@ -6,6 +6,10 @@
     ":disableDependencyDashboard",
     "github>grafana/sm-renovate//presets/grafana.json5",
   ],
+  "commitMessagePrefix": "chore: ",
+  "labels": [
+    "dependencies"
+  ],
   "customManagers": [
     {
       // Update renovate version in GHA action YAMLs.
