@@ -12,9 +12,7 @@
       "customType": "regex",
       "depNameTemplate": "ghcr.io/renovatebot/renovate",
       "datasourceTemplate": "docker",
-      "fileMatch": [
-        "\\.ya?ml$",
-      ],
+      "managerFilePatterns": ["/\\.ya?ml$/"],
       "matchStrings": [
         "renovate-version: (?<currentValue>[0-9\\w.-]+)(?:@(?<currentDigest>\\S+))?"
       ]

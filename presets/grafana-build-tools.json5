@@ -9,11 +9,11 @@
       "datasourceTemplate": "docker",
       "versioningTemplate": "semver",
       "registryUrlTemplate": "https://ghcr.io",
-      "fileMatch": [
-        "(^|/)Makefile$",
-        ".*\\.jsonnet$",
-        ".*\\.mk$",
-        "^\\.github/workflows/.*\\.ya?ml$"
+      "managerFilePatterns": [
+        "/(^|/)Makefile$/",
+        "/.*\\.jsonnet$/",
+        "/.*\\.mk$/",
+        "/^\\.github/workflows/.*\\.ya?ml$/"
       ],
       "matchStrings": [
         "ghcr.io/grafana/grafana-build-tools:(?<currentValue>[\\w.-]+)(?:@(?<currentDigest>[\\w:]+))?"
