@@ -16,8 +16,8 @@
       "customType": "regex",
       "depNameTemplate": "ghcr.io/renovatebot/renovate",
       "datasourceTemplate": "docker",
-      "fileMatch": [
-        "^actions/.*\\.ya?ml$", // Any yaml file inside /actions, including subfolders.
+      "managerFilePatterns": [
+        "/^actions/.*\\.ya?ml$/", // Any yaml file inside /actions, including subfolders.
       ],
       "matchStrings": [
         // https://regex101.com/r/CJFnB8/1
