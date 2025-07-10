@@ -5,7 +5,10 @@
     {
       // Update pinned alpine packages in Dockerfile.
       "customType": "regex",
-      "managerFilePatterns": ["/Dockerfile/"],
+      "managerFilePatterns": [
+        "**/Dockerfile",
+        "**/Dockerfile.*",
+      ],
       "matchStrings": [
         // Lines that loosely look like "apk add --repository community something=version".
         // To keep this regex simple, only one package per "apk add" is supported.
