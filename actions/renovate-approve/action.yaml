@@ -1,0 +1,88 @@
+name: Approve renovate PRs
+description: Approve renovate PRs
+
+inputs:
+  renovate-user:
+    description: Username for the author of the PR to autoapprove.
+    default: 'grafanarenovatebot[bot]'
+  require-auto-merge:
+    description: Only autoapprove PRs where automerge has been requested.
+    default: "false"
+  forbid-auto-merge:
+    description: Never autoapprove PRs where automerge has been requested.
+    default: "false"
+runs:
+  using: composite
+  steps:
+    # Workflows using this action MUST implement appropriate as coumented in the examples. The action performs the
+    # checks again for sanity.
+    - name: Sanity check
+      shell: bash
+      env:
+        # Evaluate the github expression in an env var first, and then assert using that env var in shell context.
+        # This prevents shell injection attacks if the user could control parts of this expression.
+        IS_TARGET_PR: >-
+          ${{
+            github.event_name == 'pull_request'
+            && github.event.pull_request.user.login == inputs.renovate-user
+            && github.repository == github.event.pull_request.head.repo.full_name
+          }}
+      run: |-
+        if [[ "$IS_TARGET_PR" != "true" ]]; then
+          echo "Auto-approve action is misconfigured, refusing to continue"
+          exit 1
+        fi
+
+    - name: Retrieve secrets
+      id: get-secrets
+      uses: grafana/shared-workflows/actions/get-vault-secrets@9f37f656e063f0ad0b0bfc38d49894b57d363936 # get-vault-secrets-v1.2.1
+      with:
+        export_env: false
+        common_secrets: |
+          SM_APPROVER_APP_ID=sm-approver-app:client-id
+          SM_APPROVER_PRIVATE_KEY=sm-approver-app:private-key
+
+    - name: Create GitHub app token
+      id: app-token
+      uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2
+      with:
+        app-id: ${{ fromJSON(steps.get-secrets.outputs.secrets).SM_APPROVER_APP_ID }}
+        private-key: ${{ fromJSON(steps.get-secrets.outputs.secrets).SM_APPROVER_PRIVATE_KEY }}
+
+    - name: Approve PR
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        REQUIRE_AUTOMERGE: ${{ inputs.require-auto-merge }}
+        FORBID_AUTOMERGE: ${{ inputs.forbid-auto-merge }}
+      run: |-
+        set -eo pipefail
+
+        echo "Checking if PR is cross repository"
+        if gh pr view "$PR_URL" --json isCrossRepository | grep -qie true; then
+          # This should never happen as per the job condition, but better be sure.
+          exit 1
+        fi
+
+        echo "Checking if PR is already approved"
+        if gh pr view "$PR_URL" --json reviewDecision | grep -qie approved; then
+          echo "PR already approved"
+          exit 0
+        fi
+
+        echo "Checking if automerge was requested"
+        automerge=$(gh pr view "$PR_URL" --json autoMergeRequest | jq '.autoMergeRequest != null')
+
+        if [[ "$REQUIRE_AUTOMERGE" == 'true' ]] && [[ "$automerge" != 'true' ]]; then
+          echo "Not approving PR where automerge was not requested"
+          exit 0
+        fi
+
+        if [[ "$FORBID_AUTOMERGE" == 'true' ]] && [[ "$automerge" != 'false' ]]; then
+          echo "Not approving PR where automerge was requested"
+          exit 0
+        fi
+
+        echo "Approving PR"
+        gh pr review "$PR_URL" --approve
