@@ -18,20 +18,15 @@ runs:
     # checks again for sanity.
     - name: Sanity check
       shell: bash
-      env:
-        # Evaluate the github expression in an env var first, and then assert using that env var in shell context.
-        # This prevents shell injection attacks if the user could control parts of this expression.
-        IS_TARGET_PR: >-
-          ${{
+      if: >-
+          ${{ ! (
             github.event_name == 'pull_request'
             && github.event.pull_request.user.login == inputs.renovate-user
             && github.repository == github.event.pull_request.head.repo.full_name
-          }}
+          ) }}
       run: |-
-        if [[ "$IS_TARGET_PR" != "true" ]]; then
-          echo "Auto-approve action is misconfigured, refusing to continue"
-          exit 1
-        fi
+        echo "Auto-approve action called in an invalid context, refusing to continue"
+        exit 1
 
     - name: Retrieve secrets
       id: get-secrets
