@@ -54,27 +54,30 @@ runs:
       run: |-
         set -eo pipefail
 
+        prjson=$(mktemp --suffix=.json)
+        gh pr view "${PR_URL}" --json isCrossRepository,reviewDecision,autoMergeRequest > "${prjson}"
+
         echo "Checking if PR is cross repository"
-        if gh pr view "$PR_URL" --json isCrossRepository | grep -qie true; then
+        if jq -e '.isCrossRepository == true' "${prjson}"; then
           # This should never happen as per the job condition, but better be sure.
+          echo "Refusing to approve a cross-repository PR"
           exit 1
         fi
 
         echo "Checking if PR is already approved"
-        if gh pr view "$PR_URL" --json reviewDecision | grep -qie approved; then
+        if jq -e '.reviewDecision == "APPROVED"' "${prjson}"; then
           echo "PR already approved"
           exit 0
         fi
 
         echo "Checking if automerge was requested"
-        automerge=$(gh pr view "$PR_URL" --json autoMergeRequest | jq '.autoMergeRequest != null')
 
-        if [[ "$REQUIRE_AUTOMERGE" == 'true' ]] && [[ "$automerge" != 'true' ]]; then
+        if [[ "$REQUIRE_AUTOMERGE" == 'true' ]] && jq -e '.autoMergeRequest == null' "${prjson}"; then
           echo "Not approving PR where automerge was not requested"
           exit 0
         fi
 
-        if [[ "$FORBID_AUTOMERGE" == 'true' ]] && [[ "$automerge" != 'false' ]]; then
+        if [[ "$FORBID_AUTOMERGE" == 'true' ]] && jq -e '.autoMergeRequest != null' "${prjson}"; then
           echo "Not approving PR where automerge was requested"
           exit 0
         fi
