@@ -96,7 +96,20 @@ runs:
         echo "Approving PR"
         gh pr review "$PR_URL" --approve
 
-        if [[ "$FORCE_MERGE" == 'true' ]]; then
-          echo "Force merge requested, trying to admin-merge"
-          gh pr merge "$PR_URL" --admin "--${FORCE_MERGE_METHOD}"
+        if [[ "$FORCE_MERGE" != 'true' ]]; then
+          # Force merge not requested, we're done.
+          exit 0
         fi
+
+        case "$FORCE_MERGE_METHOD" in
+          "merge" | "rebase" | "squash" )
+            ;;
+
+          *)
+            echo "Unknown force-merge-method"
+            exit 1
+            ;;
+        esac
+
+        echo "Force merge requested, trying to admin-merge"
+        gh pr merge "$PR_URL" --admin "--${FORCE_MERGE_METHOD}"
