@@ -14,6 +14,45 @@
   "prConcurrentLimit": 10,
   "branchConcurrentLimit": 10,
   "packageRules": [
+    // Automerge rules
+    {
+      // Official and grafana GitHub Actions
+      "matchManagers": [
+        "github-actions",
+      ],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchPackageNames": [
+        "actions/**", // Official actions.
+        "grafana/**" // First-party actions.
+      ],
+      "automerge": true,
+    },
+    {
+      // First-party and stdlib go packages
+      "matchManagers": [
+        "gomod",
+      ],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchPackageNames": [
+        "go", // Toolchain
+        "golang.org/x/**", // Stdlib-but-not-stdlib
+        "github.com/grafana/**", // First-party libraries
+      ],
+      "automerge": true,
+    },
+    {
+      // First-party container images
+      "matchDatasources": [ // Match datasource instead of manager, as the Docker DS is widely used in regex managers.
+        "docker",
+      ],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchPackageNames": [
+        "ghcr.io/grafana/**",
+        "grafana/**",
+      ],
+      "automerge": true,
+    },
+    // End of automerge rules.
     {
       // go.mod digest updates are very frequent, so we allow them only on monday mornings.
       "matchManagers": [
