@@ -57,7 +57,7 @@ runs:
         owner: ${{ github.repository_owner }}
 
     - name: Self-hosted Renovate
-      uses: renovatebot/github-action@53bdcc4ec92f28e5023ac92356ea8bb45f8b807d # v43.0.15
+      uses: renovatebot/github-action@70ea19f1b0dc8a9cc7af1b4278f8d3fd9778b577 # v43.0.17
       with:
         renovate-version: ${{ inputs.renovate-version }}
         token: ${{ steps.app-token.outputs.token }}
