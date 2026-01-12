@@ -15,6 +15,16 @@
   "branchConcurrentLimit": 10,
   "packageRules": [
     {
+      // Disable minimumReleaseAge. As this setting is inherited from the default config in
+      // https://github.com/grafana/deployment_tools/blob/16231ba00eac9310d2360a2075a96b1106a02c34/ksonnet/lib/renovate-self-hosted/renovate.jsonnet#L33
+      // we cannot override it as a root-level setting on a preset (this file). To work around this, we create a
+      // packageRule that matches everything and disables this.
+      "matchDatasources": [
+        "docker",
+      ],
+      "minimumReleaseAge": "",
+    },
+    {
       // go.mod digest updates are very frequent, so we allow them only on monday mornings.
       "matchManagers": [
         "gomod"
