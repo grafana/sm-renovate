@@ -14,7 +14,7 @@ inputs:
       Alternatively, specify it and include the `renovate-version.json5` preset to have it updated.
     required: false
     # Renovate updates the line below. Please keep its formatting as it is.
-    default: 42.71.0@sha256:00b07c100a298085126b9e59f0d0004edb0cf827c22b59f18dd7385399482e9d # renovate-version
+    default: 42.84.2@sha256:8f818dc7f121a48a4d49412516588b8c4c900697455174983328e796f24971ab # renovate-version
 
 runs:
   using: composite
