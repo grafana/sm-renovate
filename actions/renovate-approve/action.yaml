@@ -11,6 +11,14 @@ inputs:
   forbid-auto-merge:
     description: Never autoapprove PRs where automerge has been requested.
     default: "false"
+  force-merge:
+    description: >-
+      Forcefully merge the PR after approving. Useful as a workaround when the review requires CODEOWNERS approval.
+      The approver app needs to be granted bypass permissions for this to work.
+    default: "false"
+  force-merge-method:
+    description: Merge method when force-merging. Must be one of [merge, squash, rebase].
+    default: "rebase"
 runs:
   using: composite
   steps:
@@ -51,6 +59,8 @@ runs:
         PR_URL: ${{ github.event.pull_request.html_url }}
         REQUIRE_AUTOMERGE: ${{ inputs.require-auto-merge }}
         FORBID_AUTOMERGE: ${{ inputs.forbid-auto-merge }}
+        FORCE_MERGE: ${{ inputs.force-merge }}
+        FORCE_MERGE_METHOD: ${{ inputs.force-merge-method }}
       run: |-
         set -eo pipefail
 
@@ -84,3 +94,21 @@ runs:
 
         echo "Approving PR"
         gh pr review "$PR_URL" --approve
+
+        if [[ "$FORCE_MERGE" != 'true' ]]; then
+          # Force merge not requested, we're done.
+          exit 0
+        fi
+
+        case "$FORCE_MERGE_METHOD" in
+          "merge" | "rebase" | "squash" )
+            ;;
+
+          *)
+            echo "Unknown force-merge-method"
+            exit 1
+            ;;
+        esac
+
+        echo "Force merge requested, trying to admin-merge"
+        gh pr merge "$PR_URL" --admin "--${FORCE_MERGE_METHOD}"
