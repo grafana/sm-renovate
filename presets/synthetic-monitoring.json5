@@ -15,15 +15,26 @@
   "branchConcurrentLimit": 10,
   "packageRules": [
     {
-      // Disable minimumReleaseAge. As this setting is inherited from the default config in
-      // https://github.com/grafana/deployment_tools/blob/16231ba00eac9310d2360a2075a96b1106a02c34/ksonnet/lib/renovate-self-hosted/renovate.jsonnet#L33
-      // we cannot override it as a root-level setting on a preset (this file). To work around this, we create a
-      // packageRule that matches everything and disables this.
+      // Docker releases don't expose timestamps so minimumReleaseAge would
+      // block them indefinitely.
+      //
+      // See https://github.com/grafana/deployment_tools/blob/master/ksonnet/lib/renovate-self-hosted/renovate-dev.libsonnet
+      //
+      // This setting is inherited from the base config:
+      //
+      // https://github.com/grafana/deployment_tools/blob/master/ksonnet/lib/renovate-self-hosted/renovate-base.libsonnet#L65
+      //
+      // This is a forced setting, it cannot be modified by a top-level setting
+      // on a preset (this file). To work around this, create a packageRule
+      // that matches everything and disables this.
       "matchDatasources": [
         "docker",
+        'dockerfile',
       ],
-      "minimumReleaseAge": "",
+      minimumReleaseAgeBehaviour: 'not-applicable',
+      "minimumReleaseAge": null,
     },
+
     {
       // go.mod digest updates are very frequent, so we allow them only on monday mornings.
       "matchManagers": [
@@ -34,6 +45,7 @@
       ],
       "schedule": "* 0-8 * * 1"
     },
+
     {
       // We typically want to upgrade all prometheus-go packages at once.
       "matchManagers": [
@@ -42,6 +54,7 @@
       "matchPackageNames": "github.com/prometheus/**",
       "groupName": "prometheus-go"
     },
+
     {
       // We typically want to upgrade all otel-go packages at once.
       "matchManagers": [
@@ -50,6 +63,7 @@
       "matchPackageNames": "go.opentelemetry.io/**",
       "groupName": "otel-go"
     },
+
     {
       // shared-workflows digests get updates really often. Throttle them a bit.
       "matchManagers": "github-actions",
@@ -57,6 +71,7 @@
       "matchUpdateTypes": ["digest"],
       "schedule": "* 0-8 * * 1",
     },
+
     {
       // Disable updates to indirect go dependencies.
       "matchManagers": ["gomod"],
